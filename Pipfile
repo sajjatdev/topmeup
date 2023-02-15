@@ -8,6 +8,7 @@ flask = "*"
 requests = "*"
 autopep8 = "*"
 django = "*"
+djangorestframework = "*"
 
 [dev-packages]
 
