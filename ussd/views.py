@@ -6,11 +6,11 @@ from rest_framework import status
 
 class Index(APIView):
     def post(self, request, format=None):
-        call_log = request.POST.get("callog", None)
-        sponsor_number = request.POST.get("sponsor_number", None)
-        user_number = request.POST.get("user_number", None)
-        network = request.POST.get("network", None)
-        amount = request.POST.get("amount", None)
+        call_log = request.POST.get("callog")
+        sponsor_number = request.POST.get("sponsor_number")
+        user_number = request.POST.get("user_number")
+        network = request.POST.get("network")
+        amount = request.POST.get("amount")
 
         return Response({"Sponsor Number": sponsor_number, "amount": amount, "url": "https://paymentLink.com/pay/", }, status.HTTP_200_OK)
 
