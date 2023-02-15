@@ -12,7 +12,7 @@ class Index(APIView):
         network = request.POST.get("network", None)
         amount = request.POST.get("amount", None)
 
-        return Response({"Sponsor Number": sponsor_number, "amount": amount, "url": "https://paymentLink.com/pay/", }), status.HTTP_200_OK
+        return Response({"Sponsor Number": sponsor_number, "amount": amount, "url": "https://paymentLink.com/pay/", }, status.HTTP_200_OK)
 
     def get(self, request, format=None):
         return Response({"status": "get request Success"})
