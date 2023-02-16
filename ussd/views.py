@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from .models import USSD
 
 {
 
@@ -35,7 +35,8 @@ class Index(APIView):
         elif amount is None:
             return Response({"Error Message": "Amount Required"}, status.HTTP_404_NOT_FOUND)
         else:
-
+            USSD.objects.create(call_log=call_log, sponsor_number=sponsor_number,
+                                user_number=user_number, network=network, amount=amount, status="padding")
             return Response({"User Number": user_number, "Sponsor Number": sponsor_number, "amount": amount, "url": "https://paymentLink.com/pay/", }, status.HTTP_200_OK)
 
     def get(self, request, format=None):

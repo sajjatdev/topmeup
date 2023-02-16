@@ -1,4 +1,10 @@
 from django.contrib import admin
 from .models import USSD
-# Register your models here.
-admin.site.register(USSD)
+
+
+class PaymentRequest(admin.ModelAdmin):
+    list_display = ('sponsor_number', 'user_number',
+                    'network', 'amount', 'status',)
+
+
+admin.site.register(USSD, PaymentRequest)
