@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>InstaPay WebPay</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="{{BaseURL}}/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+        body {
+            padding-top: 0px;
+            padding-bottom: 60px;
+        }
+    </style>
+    <link href="{{BaseURL}}/css/bootstrap-responsive.css" rel="stylesheet">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+        var globalAppVersionUrl = "{{BaseURL}}";
+    </script>
+</head>
+
+<body>
+    <div id="spinner" class="loading" style="display:none">Loading&#8230;</div>
+    <div class="container" id="containerframe" style="display:none">
+        <div class="row" id="paymentform"></div>
+        <div id="previewImage"></div>
+        <hr style="margin:0">
+        <footer>
+            <p style="display:inline;line-height:40px;">Powered by © Trustlink 2020</p>
+            <img src="{{BaseURL}}/images/instaPay_2.png" style="vertical-align: top;height:30px;float:right"></img>
+            <footer>
+    </div>
+    <link rel="stylesheet" href="{{BaseURL}}/css/styles.css">
+    <script src="{{BaseURL}}/js/jquery.min.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-transition.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-alert.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-modal.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-dropdown.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-scrollspy.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-tab.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-tooltip.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-popover.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-button.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-collapse.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-carousel.js"></script>
+    <script src="{{BaseURL}}/js/bootstrap-typeahead.js"></script>
+    <script type="text/javascript" src="{{BaseURL}}/js/jquery-barcode.js"></script>
+    <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/130527/qrcode.js'></script>
+    <script type="text/javascript" src="{{BaseURL}}/js/html2canvas.js"></script>
+    <script src="{{BaseURL}}/js/md5.min.js"></script>
+    <script src="{{BaseURL}}/js/html2pdf.bundle.min.js"></script>
+    <!--<script src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.0/jspdf.min.js'></script>-->
+    <script>
+        $(document).ready(function() {
+            $('#paymentOptionHolder').show();
+            tokenId = "";
+            checksum = "c@!!@||2023";
+            checksuma = "67bd1e0b94bf161bd9e86883e9a2987e";
+            checksumu = "";
+            checksumau = "f9281f32-adc3-4b80-85c0-addb02637838_356edcf1-c049-4f9a-a850-158fa35eddfb_qwsqw#_500_ZAR_c@!!@ll2023";
+            ignore = "";
+
+            <!-- GLOBAL PARAMETERS POSTED TO LOAD DIVS - If TokenId LOAD FROM TOKEN-->
+            pars = {
+                "id": "",
+                "m_uuid": "f9281f32-adc3-4b80-85c0-addb02637838",
+                "m_account_uuid": "356edcf1-c049-4f9a-a850-158fa35eddfb",
+                "m_tx_id": "qwsqw#",
+                "m_tx_amount": "{{amount}}",
+                "m_tx_currency": "ZAR",
+                "m_tx_item_name": "Topmeup",
+                "m_tx_item_description": "Payment Request for topup",
+                "t_key": "",
+                "m_tx_order_nr": "",
+                "m_tx_invoice_nr": "",
+                "m_name": "",
+                "m_tx_site_reference": "pleasetopmeup.com",
+                "m_tx_due_date": "",
+                "m_tx_message": "",
+                "m_return_url": "35.195.159.202:5000",
+                "m_cancel_url": "",
+                "m_notify_url": "https://instapay-sandbox.trustlinkhosting.com",
+                "m_back2shop_url": "",
+                "m_tx_cc_allowed": "true",
+                "m_tx_dc_allowed": "true",
+                "m_tx_eft_allowed": "true",
+                "m_tx_ch_allowed": "true",
+                "m_tx_mp_allowed": "true",
+                "m_tx_cd_allowed": "true",
+                "m_tx_ss_allowed": "true",
+                "m_tx_zp_allowed": "true",
+                "m_tx_trident_allowed": "true",
+                "m_passthrough": "",
+                "BASEURL": '{{BaseURL}}',
+                "TARAPI": "https://tar-sbox.tlsag.net/api/v1.0/",
+                "post": "",
+                "name": "",
+                "surname": "",
+                "email": "",
+                "mobile": "",
+            };
+            //927b55ce-73c6-4e2e-bcc5-c90cbf7369d1_efb6f531-786a-4cad-b7f2-91bb24202d57_29d31b27-2bbf-488d-93fd-7724cc87f3b2_7648_cetude
+            if (!tokenId) {
+                //GET SECRET FROM DB
+                //console.log("No Token - Get data from DB");
+                var member = {
+                    "m_account_uuid": "356edcf1-c049-4f9a-a850-158fa35eddfb"
+                };
+                $.ajax({
+                    url: '{{BaseURL}}/php/getSecret.php',
+                    type: 'POST',
+                    cache: false,
+                    data: JSON.stringify(member),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function(data) {
+                        //console.log("getSecret DATA: ",data);
+
+                        var namt = Number(pars.m_tx_amount);
+                        var amt = namt.toFixed(2);
+                        var amt2 = amt.replace(/\D/g, '');
+                        var secret = data[0].secret;
+
+                        //console.log("DB security key:",secret);
+
+                        var csa = [pars.m_uuid, pars.m_account_uuid, pars.m_tx_id, amt2, pars.m_tx_currency, secret];
+
+                        //console.log("CSA join: ",csa.join('_'));
+
+                        var checksuma = md5(csa.join('_'));
+
+                        //console.log("Checksum: ",checksum);
+
+                        if (checksum !== checksuma) {
+                            if (ignore !== 'ignore') {
+                                alert("INVALID REQUEST");
+                                return;
+                            }
+                        }
+                        getURL();
+                    },
+                    error: function(result, status, error) {
+                        alert("Cannot get credentials");
+                        return;
+                    }
+                });
+                getURL();
+            } else {
+                //console.log("TokenId provided, getToken");
+                var vars = {
+                    "tokenId": "",
+                    "opt": "getDataFromToken"
+                };
+                // READ DATA FROM Payment Gateway DB TOKEN
+                $.ajax({
+                    url: '{{BaseURL}}/php/getToken.php',
+                    type: 'POST',
+                    cache: false,
+                    data: JSON.stringify(vars),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function(data) {
+                        //console.log("TokenId provided");
+                        //console.log("Get Token data from GW DB");
+                        //console.log("TOKENDATA",data);
+                        if (Array.isArray(data)) {
+                            if (data.length > 0) {
+                                pars.m_tx_due_date = data[0].m_tx_due_date;
+                                pars.m_tx_item_name = data[0].m_tx_item_name;
+                                pars.m_tx_item_description = data[0].m_tx_item_description;
+                                pars.m_tx_message = data[0].m_tx_message;
+                                pars.m_tx_invoice_nr = data[0].m_tx_invoice_nr;
+                                pars.m_tx_order_nr = data[0].m_tx_order_nr;
+                                pars.m_tx_currency = data[0].m_tx_currency; //Bug Fix NDN
+                                //if (data[0].payee) pars.m_tx_order_nr=data[0].payee.siteRefInfo;
+                                if (data[0].m_notify_url.length > 0) pars.m_notify_url = data[0].m_notify_url;
+                                if (data[0].m_return_url.length > 0) pars.m_return_url = data[0].m_return_url;
+                                if (data[0].m_back2shop_url.length > 0) pars.m_back2shop_url = data[0].m_back2shop_url;
+                                pars.m_tx_cc_allowed = data[0].m_tx_cc_allowed;
+                                pars.m_tx_dc_allowed = data[0].m_tx_dc_allowed;
+                                pars.m_tx_eft_allowed = data[0].m_tx_eft_allowed;
+                                pars.m_tx_ch_allowed = data[0].m_tx_ch_allowed;
+                                pars.m_tx_mp_allowed = data[0].m_tx_mp_allowed;
+                                pars.m_tx_cd_allowed = data[0].m_tx_cd_allowed;
+                                pars.m_tx_ss_allowed = data[0].m_tx_ss_allowed;
+                                pars.m_tx_zp_allowed = data[0].m_tx_zp_allowed;
+                                if (data[0].m_tx_trident_allowed) pars.m_tx_trident_allowed = data[0].m_tx_trident_allowed;
+                            }
+                            //console.log("PARS Data after DB TOKEN data added",pars);
+                        }
+                        //..THEN READ DATA FROM TAR TOKEN
+                        $.ajax({
+                            url: '{{BaseURL}}/php/getClientPaymentMethods.php',
+                            type: 'POST',
+                            cache: false,
+                            data: JSON.stringify(vars),
+                            contentType: 'application/json',
+                            dataType: 'json',
+                            success: function(data) {
+                                //console.log("Get Token data from CORTEX");
+                                //console.log("TOKENDATA",data);
+                                //console.log(data);
+                                pars.m_account_uuid = data.payee.accountUuid;
+                                if (data.payment) {
+                                    if (data.payment.dueDate) pars.m_tx_due_date = data.payment.dueDate; //NDN Bug fix
+                                }
+                                if (data.payee) {
+                                    if (data.payee.refInfo) pars.m_tx_order_nr = data.payee.refInfo;
+                                    else pars.m_tx_order_nr = data.payee.siteRefInfo;
+                                }
+                                pars.m_tx_id = data.payee.refInfo;
+                                amount = Number(data.amount);
+                                amount = amount.toFixed(2);
+                                console.log('amount', amount);
+                                pars.m_tx_amount = amount;
+                                pars.m_tx_item_description = data.description;
+                                pars.m_tx_site_reference = data.payee.siteRefInfo;
+                                //pars.m_uuid=data.uuid;
+                                pars.tx_id = data.payee.refInfo;
+                                //console.log("TOKENDATA Payer Data",data.payer);
+                                if (data.payer) {
+                                    pars.name = data.payer.name;
+                                    pars.surname = data.payer.surname;
+                                    pars.email = data.payer.email;
+                                    pars.mobile = data.payer.mobileNumber;
+                                }
+                                pars.requestId = data.requestId;
+                                //..GET m_uuid from m_account_uuid
+                                var member = {
+                                    "m_account_uuid": pars.m_account_uuid
+                                };
+                                $.ajax({
+                                    url: '{{BaseURL}}/php/getSecret.php',
+                                    type: 'POST',
+                                    cache: false,
+                                    data: JSON.stringify(member),
+                                    contentType: 'application/json',
+                                    dataType: 'json',
+                                    success: function(data) {
+                                        pars.m_uuid = data[0].m_uuid;
+                                        //console.log("PARS Data after CORTEX TOKENDATA data added",data);
+                                        //.. THEN GET MERCHANT DATA FROM TAR and LOAD PAGE INFO
+                                        getURL();
+                                    }
+                                });
+                            },
+                            error: function(result, status, error) {
+                                alert("Not being able to get request info");
+                                return;
+                            }
+                        });
+                    },
+                    error: function(result, status, error) {
+                        alert("Not being able to get request info from database");
+                        return;
+                    }
+                });
+            }
+        });
+
+        function getURL() {
+
+
+            var vars = {
+                m_uuid: pars.m_uuid,
+                opt: "getMerchantData"
+            };
+            //console.log(vars);
+            $.ajax({
+                url: '{{BaseURL}}/php/getMerchantData.php?opt=getMerchantData&m_uuid=' + pars.m_uuid,
+                type: 'GET',
+                cache: false,
+                data: JSON.stringify(vars),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(data) {
+                    //console.log("Get Merchant data from CORTEX");
+                    //console.log("MERCHANT DATA",data);
+                    //console.log(JSON.stringify(data));
+                    pars.m_name = data.name;
+                    if (data.hasOwnProperty("image")) pars.m_image = data.image;
+                    //console.log("PARS ",pars);
+                    $('#paymentform').load("{{BaseURL}}/includes/paymentform.php", pars, function(response, status, xhr) {
+
+                        if (pars.m_tx_cd_allowed == "true" || pars.m_tx_cd_allowed == "yes") $('#cash').css('display', 'inline-block');
+                        if (pars.m_tx_ch_allowed == "false" || pars.m_tx_ch_allowed == "no") $('#chips').css('display', 'none');
+                        if (pars.m_tx_dc_allowed == "false" || pars.m_tx_dc_allowed == "no" || pars.m_tx_cc_allowed == "false" || pars.m_tx_cc_allowed == "no") $('#cdc').css('display', 'none');
+                        if (pars.m_tx_mp_allowed == "false" || pars.m_tx_mp_allowed == "no") $('#masterpass').css('display', 'none');
+                        if (pars.m_tx_mp_allowed == "false" || pars.m_tx_mp_allowed == "no") $('#zapscan').css('display', 'none');
+                        if (pars.m_tx_eft_allowed == "false" || pars.m_tx_eft_allowed == "no") $('#eft').css('display', 'none');
+                        if (pars.m_tx_trident_allowed == "true" || pars.m_tx_trident_allowed == "yes") $('#trident').css('display', 'inline-block');
+                        // CLICK ON PAYMENT OPTION
+                        if (pars.m_passthrough) {
+                            $("#containerframe").hide();
+                            var s = document.getElementById("spinner");
+                            s.style.display = "block";
+                            curSelected = pars.m_passthrough;
+                            if (curSelected == "eft") {
+                                getEftIframe('eft');
+                            } else if (curSelected == "chips") {
+                                getCHIPS("chips");
+                            } else if (curSelected == "trident") {
+                                getCHIPS("trident");
+                            } else {
+                                includeDivs(curSelected); // LOAD SELECTED OPTION DIV
+                            }
+                            $(".paymentChoice[trg='" + curSelected + "']").show();
+                        } else {
+                            $("#containerframe").show();
+                            $('.optBtn').on('click', function(e) {
+                                $('#paymentOptionHolder').hide();
+                                curSelected = this.id;
+                                if (curSelected == "eft") {
+                                    var s = document.getElementById("spinner");
+                                    s.style.display = "block";
+                                    getEftIframe('eft');
+                                } else if (curSelected == "chips") {
+                                    getCHIPS("chips");
+                                } else if (curSelected == "trident") {
+                                    getCHIPS("trident");
+                                } else {
+                                    includeDivs(curSelected); // LOAD SELECTED OPTION DIV
+                                }
+                                $(".paymentChoice[trg='" + curSelected + "']").show();
+                            });
+                        }
+                    });
+
+
+
+                },
+                error: function(result, status, error) {
+                    //console.log(error);
+                    alert('Cannot get merchant data ' + JSON.stringify(error));
+                    return;
+                }
+            });
+        }
+        //LOAD DIV OF OPTION SELECTED
+        function includeDivs(x) {
+            if (x == "cdc") {
+                var buyerName = document.getElementById("buyerName");
+                if (buyerName.value) pars.name = buyerName.value;
+                var buyerSurname = document.getElementById("buyerSurname");
+                if (buyerSurname.value) pars.surname = buyerSurname.value;
+                var buyerMobile = document.getElementById("buyerMobile");
+                if (buyerMobile.value) pars.mobile = buyerMobile.value;
+                var buyerEmail = document.getElementById("buyerEmail");
+                if (buyerEmail.value) {
+                    pars.email = buyerEmail.value;
+                    $('#iveripage').load("{{BaseURL}}/includes/iveriform.php", pars, function(response, status, xhr) {
+                        iVeri('');
+                        $(".paymentChoice[trg='" + x + "']").show();
+                    });
+                } else {
+                    alert('A valid email is required');
+                    getURL();
+                }
+            } else if (x == "cash") {
+                $('#cashPayment').load("{{BaseURL}}/includes/payat.php", pars, function(response, status, xhr) {
+                    generateBarcode('barcode');
+                    $(".paymentChoice[trg='" + x + "']").show();
+                });
+            } else if (x == "masterpass") {
+                //$('#masterpassdetail').load("includes/masterpass.php", pars,function( response, status, xhr ) {
+                //console.log("masterpass");
+                var s = document.getElementById("spinner");
+                s.style.display = "block";
+                getQRCodeIframe(x);
+                //$(".paymentChoice[trg='"+x+"']").show();
+                //});
+            } else {
+                //$('#zapscandetail').load("includes/snapscan.php", pars,function( response, status, xhr ) {
+                //console.log("snap");
+                getQRCodeIframe(x);
+                //$(".paymentChoice[trg='"+x+"']").show();
+                //});
+            }
+        }
+
+        function changeChoice() {
+            $('.printHide').css('display', 'inline-block');
+            $('.paymentChoice').hide();
+            $('#paymentOptionHolder').show();
+        }
+        //PARAMETERS FOR TOKEN REQUEST
+        function RQ() {
+            //console.log("Build data Payment Request RQ()");
+            var reqOpt = RQ2();
+            //console.log("Payment Request Data before payer check ",reqOpt);
+            if (reqOpt.payer.mobileNumber == 0) delete reqOpt.payer.mobileNumber;
+            if (reqOpt.payer.name == 0) delete reqOpt.payer.name;
+            if (reqOpt.payer.surname == 0) delete reqOpt.payer.surname;
+            //console.log("Payment Request Data after payer check ",reqOpt);
+            return reqOpt;
+        }
+
+        function RQ2() {
+            //var surname=$("#buyerSurname").val();
+            //if (surname==="") surname="x";
+            return {
+                "amount": "5",
+                "opt": "getPaymentToken",
+                "description": "Payment Request for topup",
+                "payee": {
+                    "accountUuid": "356edcf1-c049-4f9a-a850-158fa35eddfb",
+                    "refInfo": "",
+                    //"documentUrl": pars.m_return_url,    //Bug Fix NDN
+                },
+                "payer": {
+                    "name": $("#buyerName").val(),
+                    "surname": $("#buyerSurname").val(),
+                    "email": $("#buyerEmail").val(),
+                    "mobileNumber": $("#buyerMobile").val()
+                },
+                "payment": {
+                    "options": {
+                        "cashDeposit": "true"
+                    },
+                    "expiryTime": "2099-03-15T10:00:00+02:00"
+                },
+                "requestId": "63edad015eb83"
+            };
+        }
+
+        // ADD A TOKEN IN DATABASE
+        function addTrx() {
+            //console.log("TOKEN Data to be added to GW DB",pars);
+            $.ajax({
+                url: '{{BaseURL}}/php/addToken.php',
+                type: 'POST',
+                cache: false,
+                data: JSON.stringify(pars),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(data) {
+                    //console.log("TRX",data);
+                },
+                error: function(result, status, error) {
+                    //console.log( 'something went wrong', JSON.stringify(status), JSON.stringify(error));
+                }
+            });
+        }
+       // iVeri PAYMENT 
+        function iVeri(x) {
+            if (tokenId) {
+                //console.log("iVery Data when tokenId available");
+                var tokeninput = document.getElementById("Lite_Transaction_Token");
+                tokeninput.value = tokenId + pars.m_tx_id + Math.floor(Math.random() * 900 + 100);
+                var tokeninput2 = document.getElementById("Lite_Merchant_Trace");
+                tokeninput2.value = tokenId + pars.m_tx_id + Math.floor(Math.random() * 900 + 100);
+                var merchref = document.getElementById("MerchantReference");
+                merchref.value = tokenId + pars.m_tx_id + Math.floor(Math.random() * 900 + 100);
+                var errorurl = document.getElementById("Lite_Website_Error_Url");
+                errorurl.value = pars.BASEURL + "carderror.php?tokenId=" + tokenId;
+                var laterurl = document.getElementById("Lite_Website_Trylater_Url");
+                laterurl.value = pars.BASEURL + "carderror.php?tokenId=" + tokenId;
+                var failurl = document.getElementById("Lite_Website_Fail_Url");
+                failurl.value = pars.BASEURL + "carderror.php?tokenId=" + tokenId;
+                var form1 = document.getElementById("Form1");
+                //console.log(form1);
+                form1.submit();
+            } else {
+                //console.log("iVery Data when tokenId NOT available");
+                var reqOpt = RQ();
+                //if (reqOpt.payer.mobileNumber==0) delete reqOpt.payer.mobileNumber;
+                //if (reqOpt.payer.name==0) delete reqOpt.payer.name; 
+                //if (reqOpt.payer.surname==0) delete reqOpt.payer.surname; 	
+                //var name=document.getElementById("buyerName");
+                //reqOpt.payer.name=name.value;
+
+                //console.log("ReqOpt to create payment request",reqOpt);
+                $.ajax({
+                    url: '{{BaseURL}}/php/getClientPaymentMethods.php',
+                    type: 'POST',
+                    cache: false,
+                    data: JSON.stringify(reqOpt),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function(data) {
+                        //console.log("TOKEN",data);
+                        var tokenData = data;
+                        pars.id = tokenData.tokenId;
+                        addTrx();
+                        localStorage.setItem("tokenid", tokenData.tokenId);
+                        var tokeninput = document.getElementById("Lite_Transaction_Token");
+                        //tokeninput.value=tokenData.tokenId+pars.m_tx_id;
+                        tokeninput.value = tokenData.tokenId + pars.m_tx_order_nr;
+                        var tokeninput2 = document.getElementById("Lite_Merchant_Trace");
+                        //tokeninput2.value=tokenData.tokenId+pars.m_tx_id;
+                        tokeninput2.value = tokenData.tokenId + pars.m_tx_order_nr;
+                        var merchref = document.getElementById("MerchantReference");
+                        //merchref.value=tokenData.tokenId+pars.m_tx_id;
+                        merchref.value = pars.m_tx_order_nr;
+                        var errorurl = document.getElementById("Lite_Website_Error_Url");
+                        errorurl.value = pars.BASEURL + "carderror.php?tokenId=" + tokenData.tokenId + "&passthrough=" + pars.m_passthrough + "&return=" + pars.m_return_url + "&back2shop=" + pars.m_back2shop_url + "&cancel=" + pars.m_cancel_url;
+                        //errorurl.value=pars.BASEURL+"carderror.php?tokenId="+tokenData.tokenId;
+                        //if (pars.m_passthrough) errorurl.value=pars.m_back2shop_url;
+                        var laterurl = document.getElementById("Lite_Website_Trylater_Url");
+                        laterurl.value = pars.BASEURL + "carderror.php?tokenId=" + tokenData.tokenId + "&passthrough=" + pars.m_passthrough + "&return=" + pars.m_return_url + "&back2shop=" + pars.m_back2shop_url + "&cancel=" + pars.m_cancel_url;;
+                        //laterurl.value=pars.BASEURL+"carderror.php?tokenId="+tokenData.tokenId;
+                        var failurl = document.getElementById("Lite_Website_Fail_Url");
+                        //failurl.value=pars.BASEURL+"carderror.php?tokenId="+tokenData.tokenId;
+                        failurl.value = pars.BASEURL + "carderror.php?tokenId=" + tokenData.tokenId + "&passthrough=" + pars.m_passthrough + "&return=" + pars.m_return_url + "&back2shop=" + pars.m_back2shop_url + "&cancel=" + pars.m_cancel_url;;
+                        //console.log("TOKEN",tokenData);
+
+
+
+                        //if (pars.m_passthrough) failurl.value=pars.m_back2shop_url;
+                        var form1 = document.getElementById("Form1");
+                        //alert('Stop');return
+
+                        form1.submit();
+                    },
+                    error: function(result, status, error) {
+                        alert('Cannot get card request data');
+                        return;
+                    }
+                });
+            }
+        }
+        // GENERATE BARCODE (PayAt) (Get token if empty)
+        function generateBarcode(x) {
+            var value;
+            if (tokenId) {
+                var tokeninput = document.getElementById("payattoken");
+                tokeninput.value = tokenId;
+                var pmtOpts = {
+                    "tokenId": "",
+                    "requestId": pars.requestId,
+                    "methodType": "CASH_DEPOSIT",
+                    "redirectUrl": pars.BASEURL + "payat_result.php",
+                    "opt": "cashPayment"
+                };
+                BarCode(pmtOpts);
+            } else {
+                var reqOpt = RQ();
+                reqOpt.notifyUrl = pars.BASEURL + "notify.php";
+                $.ajax({
+                    url: '{{BaseURL}}/php/getClientPaymentMethods.php',
+                    type: 'POST',
+                    cache: false,
+                    data: JSON.stringify(reqOpt),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function(data) {
+                        console.info('cashdep', data);
+                        var tokenData = data;
+                        pars.id = tokenData.tokenId;
+                        var tokeninput = document.getElementById("payattoken");
+                        tokeninput.value = pars.id;
+                        localStorage.setItem("tokenid", tokenData.tokenId);
+                        var pmtOpts = {
+                            "tokenId": tokenData.tokenId,
+                            "requestId": tokenData.requestId,
+                            "methodType": "CASH_DEPOSIT",
+                            "redirectUrl": pars.BASEURL + "payat_result.php",
+                            "opt": "cashPayment"
+                        };
+                        BarCode(pmtOpts);
+                    },
+                    error: function(result, status, error) {
+                        alert('Cannot get Pay At request data');
+                        return;
+                    }
+                });
+            }
+        }
+
+        function BarCode(pmtOpts) {
+            $.ajax({
+                url: '{{BaseURL}}/php/getClientPaymentMethods.php',
+                type: 'POST',
+                cache: false,
+                data: JSON.stringify(pmtOpts),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(data) {
+                    console.info('cashdeposit', data);
+                    var barcodeData = data;
+                    value = barcodeData.cashDepositRefInfo;
+                    //console.log('value',value);
+                    var btype = 'code128';
+                    var renderer = 'css'; //css  bmp  svg  canvas;
+                    var settings = {
+                        output: renderer,
+                        barWidth: 2,
+                        barHeight: 50,
+                        moduleSize: 8,
+                        showHRI: true,
+                        addQuietZone: true,
+                        marginHRI: 5,
+                        bgColor: "#FFFFFF",
+                        color: "#000000",
+                        fontSize: 12,
+                        output: "css",
+                        posX: 0,
+                        posY: 0
+                    }
+                    value = {
+                        code: value,
+                        rect: true
+                    };
+                    $("#barcodeTarget").html("").show().barcode(value, btype, settings);
+                },
+                error: function(result, status, error) {
+                    alert('Cannot fetch barcode');
+                    return;
+                }
+            });
+        }
+
+        function getCHIPS(x) {
+            if (tokenId) {
+                pars.id = "";
+                loadCHIPS(x);
+            } else {
+                var reqOpt = RQ();
+                //console.log(reqOpt);
+                $.ajax({
+                    url: '{{BaseURL}}/php/getClientPaymentMethods.php',
+                    type: 'POST',
+                    cache: false,
+                    data: JSON.stringify(reqOpt),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function(data) {
+                        pars.id = data.tokenId;
+                        //console.log(data,pars);
+                        loadCHIPS(x);
+                    },
+                    error: function(result, status, error) {
+                        alert('Cannot load CHIPS form');
+                        return;
+                    }
+                });
+            }
+        }
+
+        function loadCHIPS(x) {
+            $('#' + x + 'page').load("{{BaseURL}}/includes/" + x + ".php", pars, function(response, status, xhr) {
+                $(".paymentChoice[trg='" + x + "']").show();
+            });
+        }
+
+
+       // LOAD INSTANT EFT FRAME (Get token if empty)
+        function getEftIframe(x) {
+            localStorage.setItem("pars", JSON.stringify(pars));
+            if (tokenId) {
+                var mstOpts = {
+                    "tokenId": "",
+                    "requestId": pars.requestId,
+                    "methodType": "INSTANT_EFT",
+                    "redirectUrl": pars.BASEURL + "eft_result.php",
+                    "opt": "getEftIframe"
+                };
+                EFT(mstOpts);
+            } else {
+                var reqOpt = RQ();
+                //console.log(reqOpt);
+                reqOpt.payment.options.eft = true;
+                reqOpt.payment.options.cashdeposit = false;
+                $.ajax({
+                    url: '{{BaseURL}}/php/getClientPaymentMethods.php',
+                    type: 'POST',
+                    cache: false,
+                    data: JSON.stringify(reqOpt),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#paymentOptionHolder').hide();
+                        console.info('eft', data);
+                        var tokenData = data;
+                        localStorage.setItem("tokenid", tokenData.tokenId);
+                        var methodType;
+                        var mstOpts = {
+                            "tokenId": tokenData.tokenId,
+                            "requestId": tokenData.requestId,
+                            "methodType": "INSTANT_EFT",
+                            "redirectUrl": pars.BASEURL + "eft_result.php",
+                            "opt": "getEftIframe"
+                        };
+                        EFT(mstOpts);
+                    },
+                    error: function(result, status, error) {
+                        var s = document.getElementById("spinner");
+                        s.style.display = "none";
+                        alert('Cannot load EFT data');
+                        return;
+                    }
+                });
+            }
+        }
+
+        function EFT(mstOpts) {
+            $.ajax({
+                url: '{{BaseURL}}/php/getClientPaymentMethods.php',
+                type: 'POST',
+                cache: false,
+                data: JSON.stringify(mstOpts),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(data) {
+                    var s = document.getElementById("spinner");
+                    s.style.display = "none";
+                    console.info('inst_eft', data);
+                    pars.id = data.tokenId;
+                    addTrx();
+                    localStorage.setItem("tokenid", data.tokenId);
+                    var retData = data;
+                    $('#' + curSelected + 'Frame').on("load", function() {
+                        var iFrameID = document.getElementById(curSelected + 'Frame');
+                        if (iFrameID) {
+                            iFrameID.height = "";
+                            iFrameID.height = (100 + iFrameID.contentWindow.document.body.scrollHeight) + "px";
+                            iFrameID.width = "100%";
+                        }
+                    });
+                    if (retData.tokenId) window.location.href = retData.paymentUrl + '&tokenid=' + retData.tokenId;
+                    else {
+                        alert('Cannot load EFT form');
+                        return;
+                    }
+                },
+                error: function(result, status, error) {
+                    var s = document.getElementById("spinner");
+                    s.style.display = "none";
+                    alert('Cannot load EFT form');
+                    return;
+                }
+            });
+        }
+
+       // CREATE masterpass QR code 
+        function getQRCodeIframe(x) {
+            if (tokenId) {
+                //$('#'+x+'qr').qrcode({width: 300,height: 300,text: tokenId});
+                var mstOpts = {
+                    "tokenId": tokenId,
+                    "requestId": tokenId,
+                    "methodType": "MASTERPASS",
+                    "redirectUrl": pars.BASEURL + "qr_result.php",
+                    "opt": "getQRCodeIframe"
+                }
+                QRCode(mstOpts);
+            } else {
+                var reqOpt = RQ();
+                reqOpt.payment.options.masterpass = true;
+                reqOpt.payment.options.cashdeposit = false;
+                $.ajax({
+                    url: '{{BaseURL}}/php/getClientPaymentMethods.php',
+                    type: 'POST',
+                    cache: false,
+                    data: JSON.stringify(reqOpt),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function(data) {
+                        //console.log("TOKEN",data);
+                        var tokenData = data;
+                        localStorage.setItem("tokenid", tokenData.tokenId);
+                        localStorage.setItem("pars", JSON.stringify(pars));
+                        //console.log(tokenData,pars);
+                        //$('#'+x+'qr').qrcode({width: 250,height: 250,text: tokenData.tokenId});
+                        //document.getElementById(x+'code').textContent=tokenData.tokenId;
+                        var mstOpts = {
+                            "tokenId": tokenData.tokenId,
+                            "requestId": tokenData.requestId,
+                            "methodType": "MASTERPASS",
+                            "redirectUrl": pars.BASEURL + "qr_result.php",
+                            "opt": "getQRCodeIframe"
+                        }
+                        QRCode(mstOpts);
+                    },
+                    error: function(result, status, error) {
+                        var s = document.getElementById("spinner");
+                        s.style.display = "none";
+                        alert('Cannot load masterpass data');
+                        return;
+                    }
+                });
+            }
+        }
+
+        function QRCode(mstOpts) {
+            $.ajax({
+                url: '{{BaseURL}}/php/getClientPaymentMethods.php',
+                type: 'POST',
+                cache: false,
+                data: JSON.stringify(mstOpts),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(data) {
+                    var s = document.getElementById("spinner");
+                    s.style.display = "none";
+                    console.info('req2', data, curSelected);
+                    //$('#qrcode').qrcode({width: $('.qr-size').val(),height: $('.qr-size').val(),text: $('.qr-url').val()});
+                    var retData = data;
+                    pars.id = data.tokenId;
+                    addTrx();
+                    $('#' + curSelected + 'Frame').on("load", function() {
+                        var iFrameID = document.getElementById(curSelected + 'Frame');
+                        if (iFrameID) {
+                            iFrameID.height = "";
+                            iFrameID.height = (100 + iFrameID.contentWindow.document.body.scrollHeight) + "px";
+                            iFrameID.width = "100%";
+                        }
+                    });
+                    if (retData.paymentUrl) window.location.href = retData.paymentUrl;
+                    else {
+                        alert('Cannot load masterpass form');
+                        return;
+                    }
+                },
+                error: function(result, status, error) {
+                    var s = document.getElementById("spinner");
+                    s.style.display = "none";
+                    alert('Cannot load masterpass form');
+                    return;
+                }
+            });
+        }
+        // UTILITY FUNCTIONS
+        function showConfig1D() {
+            $('.config .barcode1D').show();
+            $('.config .barcode2D').hide();
+        }
+
+        function showConfig2D() {
+            $('.config .barcode1D').hide();
+            $('.config .barcode2D').show();
+        }
+
+        function clearCanvas() {
+            var canvas = $('#canvasTarget').get(0);
+            var ctx = canvas.getContext('2d');
+            ctx.lineWidth = 1;
+            ctx.lineCap = 'butt';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.strokeStyle = '#000000';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function handlePrint(x) {
+            switch (x) {
+                case 'email':
+                case 'print':
+                case 'download':
+                    const element = document.getElementById("cashPayment");
+                    html2pdf().from(element).toPdf().get('pdf').then(function(pdf) {
+                        window.open(pdf.output('bloburl'), '_blank');
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+        var globalPmtOpts = {}
+
+        function devOverride() {
+            $('#cash,#chips,#eft,#cdc,#masterpass,#zapscan').css('display', 'inline-block');
+        }
+        $('#eftFrame').on("load", function() {
+            var iFrameID = document.getElementById('eftFrame');
+            if (iFrameID) {
+                iFrameID.height = "";
+                iFrameID.height = (100 + iFrameID.contentWindow.document.body.scrollHeight) + "px";
+                iFrameID.width = "100%";
+            }
+        });
+        var getCanvas; // global variable
+        var chpsTok;
+        var userAvatar;
+        var avatarName;
+        var curBal;
+        var chipsR;
+        var chpsT;
+        var chpsU;
+        var pmtReq = "5";
+        var optedLink = '<h2>Masterpass Payment Options</h2> <p>Scan the QRCODE.</p> <div id="paymentOptionButtonHolder"> <div id="masterpass" class="optBtn">Etc</div> <div id="eft" class="optBtn">Instant EFT</div> </div>';
+        var curSelected;
+    </script>
+</body>
+
+</html>
