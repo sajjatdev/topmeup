@@ -9,6 +9,7 @@ requests = "*"
 autopep8 = "*"
 django = "*"
 djangorestframework = "*"
+django-jazzmin = "*"
 
 [dev-packages]
 
