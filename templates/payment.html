@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+   
     <meta charset="utf-8">
     <title>InstaPay WebPay</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,10 +16,10 @@
         }
     </style>
     <link href="{{BaseURL}}/css/bootstrap-responsive.css" rel="stylesheet">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{BaseURL}}/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{BaseURL}}/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{BaseURL}}/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="{{BaseURL}}/ico/apple-touch-icon-57-precomposed.png">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
         var globalAppVersionUrl = "{{BaseURL}}";
@@ -60,11 +61,14 @@
         $(document).ready(function() {
             $('#paymentOptionHolder').show();
             tokenId = "";
-            checksum = "c@!!@||2023";
-            checksuma = "67bd1e0b94bf161bd9e86883e9a2987e";
+            checksum = "c@!!@ll2023";
+            checksuma = "c326389606468d0e0baea753c265058c";
             checksumu = "";
-            checksumau = "f9281f32-adc3-4b80-85c0-addb02637838_356edcf1-c049-4f9a-a850-158fa35eddfb_qwsqw#_500_ZAR_c@!!@ll2023";
+            checksumau = "f9281f32-adc3-4b80-85c0-addb02637838_356edcf1-c049-4f9a-a850-158fa35eddfb_qwsqw#_500_ZAR_";
             ignore = "";
+
+
+
 
             <!-- GLOBAL PARAMETERS POSTED TO LOAD DIVS - If TokenId LOAD FROM TOKEN-->
             pars = {
@@ -72,33 +76,33 @@
                 "m_uuid": "f9281f32-adc3-4b80-85c0-addb02637838",
                 "m_account_uuid": "356edcf1-c049-4f9a-a850-158fa35eddfb",
                 "m_tx_id": "qwsqw#",
-                "m_tx_amount": "{{amount}}",
+                "m_tx_amount": "5",
                 "m_tx_currency": "ZAR",
                 "m_tx_item_name": "Topmeup",
                 "m_tx_item_description": "Payment Request for topup",
                 "t_key": "",
-                "m_tx_order_nr": "01635311147",
-                "m_tx_invoice_nr": "01635311147",
-                "m_name": "pleasetopmeup.com",
-                "m_tx_site_reference": "pleasetopmeup.com",
-                "m_tx_due_date": "01/01/2012",
-                "m_tx_message": "pleasetopmeup.com",
-                "m_return_url": "35.195.159.202:5000",
-                "m_cancel_url": "35.195.159.202:5000",
-                "m_notify_url": "35.195.159.202:5000",
+                "m_tx_order_nr": "",
+                "m_tx_invoice_nr": "",
+                "m_name": "",
+                "m_tx_site_reference": "",
+                "m_tx_due_date": "",
+                "m_tx_message": "",
+                "m_return_url": "https://www.youtube.com",
+                "m_cancel_url": "",
+                "m_notify_url": "https://instapay-sandbox.trustlinkhosting.com",
                 "m_back2shop_url": "",
-                "m_tx_cc_allowed": "true",
-                "m_tx_dc_allowed": "true",
-                "m_tx_eft_allowed": "true",
-                "m_tx_ch_allowed": "true",
-                "m_tx_mp_allowed": "true",
-                "m_tx_cd_allowed": "true",
-                "m_tx_ss_allowed": "true",
-                "m_tx_zp_allowed": "true",
-                "m_tx_trident_allowed": "true",
+                "m_tx_cc_allowed": "",
+                "m_tx_dc_allowed": "",
+                "m_tx_eft_allowed": "",
+                "m_tx_ch_allowed": "",
+                "m_tx_mp_allowed": "",
+                "m_tx_cd_allowed": "",
+                "m_tx_ss_allowed": "",
+                "m_tx_zp_allowed": "",
+                "m_tx_trident_allowed": "",
                 "m_passthrough": "",
-                "BASEURL": '{{BaseURL}}',
-                "TARAPI": "https://tar-sbox.tlsag.net/api/v1.0/",
+                "BASEURL": "https://instapay-live.trustlinkhosting.com/",
+                "TARAPI": "https://tar.tlsag.net/api/v1.0/",
                 "post": "",
                 "name": "",
                 "surname": "",
@@ -282,20 +286,20 @@
                 success: function(data) {
                     //console.log("Get Merchant data from CORTEX");
                     //console.log("MERCHANT DATA",data);
-                    //console.log(JSON.stringify(data));
+                    console.log(JSON.stringify(data));
                     pars.m_name = data.name;
                     if (data.hasOwnProperty("image")) pars.m_image = data.image;
                     //console.log("PARS ",pars);
                     $('#paymentform').load("{{BaseURL}}/includes/paymentform.php", pars, function(response, status, xhr) {
 
-                        if (pars.m_tx_cd_allowed == "true" || pars.m_tx_cd_allowed == "yes") $('#cash').css('display', 'inline-block');
+                        if (pars.m_tx_cd_allowed == "false" || pars.m_tx_cd_allowed == "no") $('#cash').css('display', 'none');
                         if (pars.m_tx_ch_allowed == "false" || pars.m_tx_ch_allowed == "no") $('#chips').css('display', 'none');
-                        if (pars.m_tx_dc_allowed == "false" || pars.m_tx_dc_allowed == "no" || pars.m_tx_cc_allowed == "false" || pars.m_tx_cc_allowed == "no") $('#cdc').css('display', 'none');
+                        if (pars.m_tx_dc_allowed == "false" || pars.m_tx_dc_allowed == "false" || pars.m_tx_cc_allowed == "no" || pars.m_tx_cc_allowed == "no") $('#cdc').css('display', 'none');
                         if (pars.m_tx_mp_allowed == "false" || pars.m_tx_mp_allowed == "no") $('#masterpass').css('display', 'none');
                         if (pars.m_tx_mp_allowed == "false" || pars.m_tx_mp_allowed == "no") $('#zapscan').css('display', 'none');
                         if (pars.m_tx_eft_allowed == "false" || pars.m_tx_eft_allowed == "no") $('#eft').css('display', 'none');
                         if (pars.m_tx_trident_allowed == "true" || pars.m_tx_trident_allowed == "yes") $('#trident').css('display', 'inline-block');
-                        // CLICK ON PAYMENT OPTION
+                      // CLICK ON PAYMENT OPTION-->
                         if (pars.m_passthrough) {
                             $("#containerframe").hide();
                             var s = document.getElementById("spinner");
@@ -425,7 +429,7 @@
                     },
                     "expiryTime": "2099-03-15T10:00:00+02:00"
                 },
-                "requestId": "63edad015eb83"
+                "requestId": "63efa75786652"
             };
         }
 
@@ -447,7 +451,7 @@
                 }
             });
         }
-       // iVeri PAYMENT 
+        // iVeri PAYMENT -->
         function iVeri(x) {
             if (tokenId) {
                 //console.log("iVery Data when tokenId available");
@@ -484,7 +488,7 @@
                     contentType: 'application/json',
                     dataType: 'json',
                     success: function(data) {
-                        //console.log("TOKEN",data);
+                        console.log("TOKEN",data);
                         var tokenData = data;
                         pars.id = tokenData.tokenId;
                         addTrx();
@@ -525,7 +529,7 @@
                 });
             }
         }
-        // GENERATE BARCODE (PayAt) (Get token if empty)
+       // GENERATE BARCODE (PayAt) (Get token if empty)-->
         function generateBarcode(x) {
             var value;
             if (tokenId) {
@@ -650,7 +654,7 @@
         }
 
 
-       // LOAD INSTANT EFT FRAME (Get token if empty)
+        // LOAD INSTANT EFT FRAME (Get token if empty)-->
         function getEftIframe(x) {
             localStorage.setItem("pars", JSON.stringify(pars));
             if (tokenId) {
@@ -738,7 +742,7 @@
             });
         }
 
-       // CREATE masterpass QR code 
+     // CREATE masterpass QR code -->
         function getQRCodeIframe(x) {
             if (tokenId) {
                 //$('#'+x+'qr').qrcode({width: 300,height: 300,text: tokenId});
@@ -826,7 +830,7 @@
                 }
             });
         }
-        // UTILITY FUNCTIONS
+      // UTILITY FUNCTIONS-->
         function showConfig1D() {
             $('.config .barcode1D').show();
             $('.config .barcode2D').hide();
